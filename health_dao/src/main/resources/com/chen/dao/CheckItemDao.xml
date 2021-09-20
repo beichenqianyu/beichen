@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chen.dao.CheckItemDao">
+    <select id="findAll" resultType="checkitem">
+        select * from t_checkitem
+    </select>
+
+    <insert id="add" parameterType="com.chen.pojo.CheckItem">
+        insert into t_checkitem(code,name,sex,age,price,type,remark,attention) values
+        (#{code},#{name},#{sex},#{age},#{price},#{type},#{remark},#{attention})
+    </insert>
+
+    <!--对于基础数据类型，使用if动态标签时，要使用value在做条件判断。或使用 _parameter做条件判断 -->
+
+    <select id="findByCondition" parameterType="string" resultType="com.chen.pojo.CheckItem">
+        select id,code,name,sex,age,price,type,remark,attention from t_checkitem
+        <where>
+            <if test="value != null and value.length > 0">
+                code like #{queryString} or name like #{queryString}
+            </if>
+        </where>
+    </select>
+
+    <!--根据检查项id查询中间关系表-->
+    <select id="findCountByCheckItemId" parameterType="int" resultType="int">
+        select count(0) from t_checkgroup_checkitem where checkitem_id=#{id}
+    </select>
+    <!--通过检查项id删除-->
+    <delete id="deleteById" parameterType="int">
+        delete from t_checkitem where id = #{id}
+    </delete>
+
+    <!--根据检查项id查询检查项信息-->
+    <select id="findById" parameterType="int" resultType="checkitem">
+        select id,code,name,sex,age,price,type,remark,attention from
+        t_checkitem where id = #{id}
+    </select>
+
+    <update id="update" parameterType="checkitem">
+        update t_checkitem set
+        code = #{code},
+        name = #{name},
+        sex = #{sex},
+        age = #{age},
+        price = #{price},
+        type = #{type},
+        remark = #{remark},
+        attention = #{attention}
+        where id = #{id}
+    </update>
+
+</mapper>
