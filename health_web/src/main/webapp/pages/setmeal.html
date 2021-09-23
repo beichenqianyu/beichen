@@ -78,7 +78,7 @@
                 <div class="box">
                     <div class="filter-container">
                         <el-input placeholder="编码/名称/助记码" v-model="pagination.queryString" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"></el-input>
-                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button @click="handleCurrentChange(1)" class="dalfBut">查询</el-button>
                         <el-button type="primary" class="butT" @click="handleCreate()">新建</el-button>
                     </div>
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
@@ -408,7 +408,17 @@
                 },
                 //分页查询
                 findPage() {
-
+                    axios.post("/setmeal/findPage.do",this.pagination).then(response=>{
+                        if (response.data.flag){
+                            //成功绑定结果集
+                            this.dataList = response.data.data.rows;
+                            //绑定总记录数
+                            this.pagination.total = response.data.data.total;
+                        }else {
+                            //失败提示
+                            this.$message.error(response.data.message);
+                        }
+                    })
                 },
                 //编辑
                 handleEdit() {
@@ -450,6 +460,8 @@
                 },
                 //切换页码
                 handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
                 }
             }
         })

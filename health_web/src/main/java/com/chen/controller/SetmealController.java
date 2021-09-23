@@ -1,21 +1,23 @@
 package com.chen.controller;
 
+
 import com.chen.constant.MessageConstant;
+import com.chen.entity.PageResult;
+import com.chen.entity.QueryPageBean;
 import com.chen.entity.Result;
 import com.chen.pojo.Setmeal;
 import com.chen.service.SetmealService;
 import com.chen.utils.QiNiuUtils;
-import com.qiniu.storage.model.FileListing;
-import javafx.scene.control.TableView;
-import org.apache.ibatis.io.ResolverUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,5 +80,14 @@ public class SetmealController {
         //返回操作的结果
         return new Result(true,MessageConstant.ADD_SETMEAL_SUCCESS);
     }
+
+
+    @PostMapping("/findPage")
+    public Result findPage(@RequestBody QueryPageBean queryPageBean){
+      PageResult<Setmeal> pageResult = setmealService.findPage(queryPageBean);
+
+        return new Result(true,MessageConstant.QUERY_SETMEAL_SUCCESS,pageResult);
+    }
+
 
 }

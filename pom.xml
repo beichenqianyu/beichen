@@ -14,7 +14,9 @@
         <module>health_common</module>
         <module>health_pojo</module>
         <module>health_web</module>
-        <module>health_test</module>
+
+        <module>health_jobs</module>
+        <module>health_security</module>
     </modules>
 
     <properties>

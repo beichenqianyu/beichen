@@ -17,4 +17,18 @@
         values (#{setmealId},#{checkgroupId})
     </insert>
 
+    <!--分页查询-->
+    <select id="findByCondition" parameterType="String" resultType="setmeal">
+        select id,name,code,helpCode,sex,age,price,remark,attention from t_setmeal
+        <where>
+            <if test="value != null and value.length > 0">
+                code like #{queryString} or name like #{queryString} or helpCode like #{queryString}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectImgs" resultType="String">
+        select img from t_setmeal
+    </select>
+
 </mapper>

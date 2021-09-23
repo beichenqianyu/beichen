@@ -1,7 +1,10 @@
 package com.chen.dao;
 
 import com.chen.pojo.Setmeal;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SetmealDao {
 
@@ -17,4 +20,17 @@ public interface SetmealDao {
      * @param checkgroupId
      */
     void addSetmealCheckGroup(@Param("setmealId") Integer setmealId, @Param("checkgroupId") Integer checkgroupId);
+
+    /**
+     * 分页查询
+     * @param queryString
+     * @return
+     */
+    Page<Setmeal> findByCondition(String queryString);
+
+    /**
+     * 查询数据库图片
+     * @return
+     */
+    List<String> selectImgs();
 }

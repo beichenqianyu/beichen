@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <!--注意：security所有的URL配置必须以 / 开头 否则启动会报错-->
+    <!--拦截的规则：标定要访问哪些URL，登录用户必须有哪些权限才可以访问
+         http:使用协议，http 请求
+         auto-config ： 是否自动配置，处理登录请求，如果没有登录页面，spring-security会帮我们自动生成
+         use-expressions:是否使用sp el表达式 hasAnyRole,hasRole hasAuthority
+         intercept-url:拦截URL配置
+         pattern:匹配的路径规则，/** 所有的URL请求
+         access:登录用户要访问这个URL（pattern），就需要有相应的权限才可以访问，填写值可以是表达式（use-expressions=true）
+         还可以是大写 ROLE_ 开头的字符串 （use-expressions=“false”）
+
+    -->
+    <!--
+http：用于定义相关权限控制
+指定哪些资源不需要进行权限校验，可以使用通配符
+-->
+    <security:http security="none" pattern="/js/**" />
+    <security:http security="none" pattern="/css/**" />
+    <security:http security="none" pattern="/login.html" />
+
+    <security:http auto-config="true" use-expressions="false">
+        <security:intercept-url pattern="/**" access="ROLE_ADMIN"/>
+
+        <!--   登陆相关配置
+login-page: 登陆页面，如果用户没有登陆则跳转到这个页面
+login-processing-url: 登陆的form表单提交的url
+username-parameter: 登陆时提交的用户名的参数名 security通过request.getParameter(username)获取登陆用户名request.getParameter("username")
+password-parameter: 登陆时提交的密码的参数名 security通过request.getParameter(password)获取密码request.getParameter("password")
+default-target-url: 登陆成功后，默认跳转的页面
+authentication-failure-url: 登陆失败跳转的页面
+-->
+        <security:form-login
+                login-page="/login.html"
+                login-processing-url="/login.do"
+                username-parameter="username"
+                password-parameter="password"
+                default-target-url="/index.html"
+                authentication-failure-url="/fail.html"
+        ></security:form-login>
+
+    </security:http>
+
+
+    <!--认证管理器：提供登录用户信息，，从哪里获取登录用户的信息-->
+    <security:authentication-manager>
+        <!--用户信息的供应商，提供登录用户的信息的-->
+        <security:authentication-provider>
+            <security:user-service>
+                <!--user:启动时往spring容器中注册一个用户对象：内存中写死的。
+                    authorities 这个用户所拥有的权限集合，案例中要与上方拦截配置中的access值一样
+                    {noop}: no operation：不需要额外的操作，铭文
+                -->
+                <security:user name="admin" authorities="ROLE_ADMIN" password="{noop}admin"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+</beans>
